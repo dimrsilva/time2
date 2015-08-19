@@ -39,7 +39,8 @@ public class ConversionCalculatorWindow extends javax.swing.JFrame {
         optionHex = new javax.swing.JRadioButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         textOutput = new javax.swing.JTextArea();
-        jButton1 = new javax.swing.JButton();
+        btnExecute = new javax.swing.JButton();
+        btnHistory = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -61,6 +62,7 @@ public class ConversionCalculatorWindow extends javax.swing.JFrame {
         optionOct.setText("OCT");
 
         buttonGroup1.add(optionDec);
+        optionDec.setSelected(true);
         optionDec.setText("DEC");
 
         buttonGroup1.add(optionHex);
@@ -70,10 +72,22 @@ public class ConversionCalculatorWindow extends javax.swing.JFrame {
         textOutput.setRows(5);
         jScrollPane1.setViewportView(textOutput);
 
-        jButton1.setText("Executar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnExecute.setText("Executar");
+        btnExecute.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnExecuteActionPerformed(evt);
+            }
+        });
+
+        btnHistory.setText("Histórico");
+        btnHistory.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnHistoryMouseClicked(evt);
+            }
+        });
+        btnHistory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHistoryActionPerformed(evt);
             }
         });
 
@@ -81,23 +95,26 @@ public class ConversionCalculatorWindow extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(optionBin)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(optionOct)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(optionDec)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(optionHex)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(textInput, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(textInput, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(optionBin)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(optionOct)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(optionDec)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(optionHex)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 118, Short.MAX_VALUE)
+                        .addComponent(btnExecute))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnHistory)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -106,16 +123,18 @@ public class ConversionCalculatorWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(textInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                    .addComponent(btnExecute))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(optionBin)
                     .addComponent(optionOct)
                     .addComponent(optionDec)
                     .addComponent(optionHex))
-                .addGap(12, 12, 12)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnHistory)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(67, Short.MAX_VALUE))
+                .addContainerGap(38, Short.MAX_VALUE))
         );
 
         pack();
@@ -129,24 +148,36 @@ public class ConversionCalculatorWindow extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_textInputActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnExecuteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExecuteActionPerformed
         String output = "";
         
+        InputHistory hist = new InputHistory();
         Calculator calculator = new ConversionCalculator();
+        
         List<Object> cmd = new ArrayList<>();
         
         cmd.add(new Integer(ConversionCalculator.BIN));
-        cmd.add(new Integer(ConversionCalculator.OCT));            
-        cmd.add(textInput.getText());
-            
+        cmd.add(new Integer(ConversionCalculator.OCT));
+        
+        String value = textInput.getText(); 
+        cmd.add(value);
+        
+        int type = 0;
         if (this.optionBin.isSelected()) {
-            cmd.set(0, new Integer(ConversionCalculator.BIN));
+            cmd.set(0, new Integer(type = ConversionCalculator.BIN));
         } else if (this.optionOct.isSelected()) {
-            cmd.set(0, new Integer(ConversionCalculator.OCT));
+            cmd.set(0, new Integer(type = ConversionCalculator.OCT));
         } else if (this.optionDec.isSelected()) {
-            cmd.set(0, new Integer(ConversionCalculator.DEC));
+            cmd.set(0, new Integer(type = ConversionCalculator.DEC));
         } else if (this.optionHex.isSelected()) {
-            cmd.set(0, new Integer(ConversionCalculator.HEX));
+            cmd.set(0, new Integer(type = ConversionCalculator.HEX));
+        }
+        
+        try {
+            hist.addHistory(new InputPair(type, value));
+        } catch (Exception e) {
+            textOutput.setText(e.getMessage());
+            return;
         }
         
         if (!this.optionBin.isSelected()) {
@@ -170,7 +201,27 @@ public class ConversionCalculatorWindow extends javax.swing.JFrame {
         }
         
         textOutput.setText(output);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnExecuteActionPerformed
+
+    private void btnHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHistoryActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnHistoryActionPerformed
+
+    private void btnHistoryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnHistoryMouseClicked
+        // TODO add your handling code here:
+        InputHistory hist = new InputHistory();
+        String output = new String("");
+        
+        try {
+            List<InputPair> list = hist.loadHistory();
+            for (InputPair p: list) {
+                output += p.toString() + "\n"; 
+            }
+            textOutput.setText(output);
+        } catch(Exception e) {
+            textOutput.setText(e.getMessage());
+        }
+    }//GEN-LAST:event_btnHistoryMouseClicked
 
     /**
      * @param args the command line arguments
@@ -208,9 +259,10 @@ public class ConversionCalculatorWindow extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnExecute;
+    private javax.swing.JButton btnHistory;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
-    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JRadioButton optionBin;
     private javax.swing.JRadioButton optionDec;
